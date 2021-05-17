@@ -1,0 +1,16 @@
+{
+  "development": {
+    "username": "kagency",
+    "password": "root",
+    "database": "root",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "vala_kagency",
+    "password": "O3pkueNUNHiw",
+    "database": "vala_kagency",
+    "host": "165.22.111.215",
+    "dialect": "mysql"
+  }
+}

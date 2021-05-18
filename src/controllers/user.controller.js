@@ -2,15 +2,34 @@ const User = require("@models/user.model");
 const Role = require("@models/role.model");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const HandlerUtils = require("@utils/handler.utils");
 
 User.belongsTo(Role, { as: "role", foreignKey: "role_id" });
 
-const errorHandler = (res, err) =>
-  res.status(500).send({
-    message: err.message || "Error occurred",
-  });
-
-const responseHandler = (res, data) => res.status(200).send(data);
+exports.authentication = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const result = await db.queryDB(query.FIND_BY_EMAIL(email));
+    const user = result.rows[0];
+    if (result.rowCount === 0)
+      return res.status(404).json({ message: `user's not exist` });
+    if (user.role_id === 0)
+      return res.status(403).json({ message: `user doesn't have permission` });
+    if (!bcrypt.compareSync(password, user.password))
+      return res.sendStatus(403);
+    jwt.sign(
+      { user, key: "kagency" },
+      "kagencySecret",
+      { expiresIn: "86400s" },
+      (err, token) => {
+        if (err) return res.status(403).send(err);
+        return res.status(200).json({ accessToken: `Kagency|${token}` });
+      }
+    );
+  } catch (error) {
+    return res.status(400).send({ error: error.message });
+  }
+};
 
 exports.create = async (req, res) => {
   try {
@@ -32,9 +51,9 @@ exports.create = async (req, res) => {
           password: hash,
         };
         const user = await User.create(newUser).catch((err) =>
-          errorHandler(res, err)
+          HandlerUtils.errorHandler(res, err)
         );
-        return responseHandler(res, user);
+        return HandlerUtils.responseHandler(res, user);
       });
     });
   } catch (error) {
@@ -49,23 +68,23 @@ exports.findAll = async (req, res) => {
   const users = await User.findAll({
     where: condition,
     include: [{ model: Role, as: "role" }],
-  }).catch((err) => errorHandler(res, err));
-  return responseHandler(res, users);
+  }).catch((err) => HandlerUtils.errorHandler(res, err));
+  return HandlerUtils.responseHandler(res, users);
 };
 
 exports.findOne = async (req, res) => {
   const username = req.params.username;
-  const user = await User.findOne({ where: { username: username } }).catch((err) =>
-    errorHandler(res, err)
+  const user = await User.findOne({ where: { username: username } }).catch(
+    (err) => HandlerUtils.errorHandler(res, err)
   );
-  return responseHandler(res, user);
+  return HandlerUtils.responseHandler(res, user);
 };
 
 exports.update = async (req, res) => {
   const id = req.params.id;
   const isUpdated = await User.update(req.body, {
     where: { id: id },
-  }).catch((err) => errorHandler(res, err));
+  }).catch((err) => HandlerUtils.errorHandler(res, err));
   if (isUpdated == 1) {
     res.status(200).send({
       message: "updated data successfully!",
@@ -82,7 +101,7 @@ exports.delete = async (req, res) => {
 
   const isDeleted = await User.destroy({
     where: { id: id },
-  }).catch((err) => errorHandler(res, err));
+  }).catch((err) => HandlerUtils.errorHandler(res, err));
   if (isDeleted == 1) {
     res.status(200).send({
       message: "delete data successfully!",
@@ -98,13 +117,13 @@ exports.deleteAll = async (req, res) => {
   const userCount = await User.destroy({
     where: {},
     truncate: false,
-  }).catch((err) => errorHandler(res, err));
+  }).catch((err) => HandlerUtils.errorHandler(res, err));
   return res.status(200).send({ message: `${userCount} data rows deleted` });
 };
 
 exports.findAllActive = async (req, res) => {
-  const users = await User.findAll({ where: { activated: true } }).catch((err) =>
-    errorHandler(res, err)
+  const users = await User.findAll({ where: { activated: true } }).catch(
+    (err) => HandlerUtils.errorHandler(res, err)
   );
-  return responseHandler(res, users);
+  return HandlerUtils.responseHandler(res, users);
 };

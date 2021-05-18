@@ -1,17 +1,17 @@
 const topics = require("@controllers/topic.controller");
-
+const auth = require("@authentication/verify.auth");
 const router = require("express").Router();
 
-router.post("/", topics.create);
+router.get("/topics", topics.findAll);
 
-router.get("/", topics.findAll);
+router.post("/topics", auth.verifyAccess, topics.create);
 
-router.get("/id=:id&filter=projects", topics.findAllProjectByTopic);
+router.get("/topics/id=:id&filter=projects", topics.findAllProjectByTopic);
 
-router.get("/id=:id", topics.findOne);
+router.get("/topics/id=:id", topics.findOne);
 
-router.post("/id=:id", topics.update);
+router.post("/topics/id=:id", auth.verifyAccess, topics.update);
 
-router.delete("/id=:id", topics.delete);
+router.delete("/topics/id=:id", auth.verifyAccess, topics.delete);
 
 module.exports = router;

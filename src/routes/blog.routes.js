@@ -1,17 +1,17 @@
 const blogs = require("@controllers/blog.controller");
-
+const auth = require("@authentication/verify.auth");
 const router = require("express").Router();
 
-router.post("/", blogs.create);
+router.get("/blogs", blogs.findAll);
 
-router.get("/", blogs.findAll);
+router.post("/blogs", auth.verifyAccess, blogs.create);
 
-router.get("/id=:id", blogs.findOne);
+router.get("/blogs/id=:id", blogs.findOne);
 
-router.post("/id=:id", blogs.update);
+router.post("/blogs/id=:id", auth.verifyAccess, blogs.update);
 
-router.delete("/id=:id", blogs.delete);
+router.delete("/blogs/id=:id", auth.verifyAccess, blogs.delete);
 
-router.delete("/all", blogs.deleteAll);
+router.delete("/blogs/all", auth.verifyAccess, blogs.deleteAll);
 
 module.exports = router;

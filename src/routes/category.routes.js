@@ -2,16 +2,16 @@ const categories = require("@controllers/category.controller");
 
 const router = require("express").Router();
 
-router.post("/", categories.create);
+router.get("/categories", categories.findAll);
 
-router.get("/", categories.findAll);
+router.post("/categories", categories.create);
 
-router.get("/id=:id&filter=blogs", categories.findAllBlogsByCategory);
+router.get("/categories/id=:id&filter=blogs", categories.findAllBlogsByCategory);
 
-router.get("/id=:id", categories.findOne);
+router.get("/categories/id=:id", categories.findOne);
 
-router.post("/id=:id", categories.update);
+router.post("/categories/id=:id", categories.update);
 
-router.delete("/id=:id", categories.delete);
+router.delete("/categories/id=:id", categories.delete);
 
 module.exports = router;

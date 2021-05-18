@@ -1,17 +1,17 @@
 const roles = require("@controllers/role.controller");
-
+const auth = require("@authentication/verify.auth");
 const router = require("express").Router();
 
-router.post("/", roles.create);
+router.get("/roles", roles.findAll);
 
-router.get("/", roles.findAll);
+router.post("/roles", auth.verifyAccess, roles.create);
 
-router.get("/id=:id&filter=users", roles.findAllUserWithRole);
+router.get("/roles/id=:id&filter=users", roles.findAllUserWithRole);
 
-router.get("/id=:id", roles.findOne);
+router.get("/roles/id=:id", roles.findOne);
 
-router.post("/id=:id", roles.update);
+router.post("/roles/id=:id", auth.verifyAccess, roles.update);
 
-router.delete("/id=:id", roles.delete);
+router.delete("/roles/id=:id", auth.verifyAccess, roles.delete);
 
 module.exports = router;

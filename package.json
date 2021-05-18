@@ -36,7 +36,8 @@
     "@database": "src/database",
     "@controllers": "src/controllers",
     "@models": "src/models",
-    "@routes": "src/routes"
+    "@routes": "src/routes",
+    "@utils": "src/utils"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0",

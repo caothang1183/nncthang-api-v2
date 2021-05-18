@@ -1,19 +1,53 @@
 const users = require("@controllers/user.controller");
-
+const auth = require("@authentication/verify.auth");
 const router = require("express").Router();
 
-router.post("/register", users.create);
+router.post("/auth", users.authentication);
 
-router.get("/", users.findAll);
+router.post(
+  "/users/register",
+  auth.verifyDevelopment,
+  auth.verifyOwner,
+  users.create
+);
 
-router.get("/status=activated", users.findAllActive);
+router.get("/users", auth.verifyAccess, auth.verifyDevelopment, users.findAll);
 
-router.get("/username=:username", users.findOne);
+router.get(
+  "/users/status=activated",
+  auth.verifyAccess,
+  auth.verifyDevelopment,
+  users.findAllActive
+);
 
-router.put("/id=:id", users.update);
+router.get(
+  "/users/username=:username",
+  auth.verifyAccess,
+  auth.verifyDevelopment,
+  users.findOne
+);
 
-router.delete("/id=:id", users.delete);
+router.put(
+  "/users/id=:id",
+  auth.verifyAccess,
+  auth.verifyDevelopment,
+  users.update
+);
 
-router.delete("/all", users.deleteAll);
+router.delete(
+  "/users/id=:id",
+  auth.verifyOwner,
+  auth.verifyAccess,
+  auth.verifyDevelopment,
+  users.delete
+);
+
+router.delete(
+  "/users/all",
+  auth.verifyOwner,
+  auth.verifyAccess,
+  auth.verifyDevelopment,
+  users.deleteAll
+);
 
 module.exports = router;

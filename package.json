@@ -1,0 +1,45 @@
+{
+  "name": "nncthang-api-v2",
+  "version": "1.0.0",
+  "description": "vala_kagency\r O3pkueNUNHiw",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=production node server.js",
+    "dev": "cross-env NODE_ENV=development nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caothang1183/nncthang-api-v2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caothang1183/nncthang-api-v2/issues"
+  },
+  "homepage": "https://github.com/caothang1183/nncthang-api-v2#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.7",
+    "sequelize": "^6.6.2",
+    "uuid": "^8.3.2"
+  },
+  "_moduleAliases": {
+    "@root": "./src",
+    "@authentication": "src/authentication",
+    "@database": "src/database",
+    "@controllers": "src/controllers",
+    "@models": "src/models",
+    "@routes": "src/routes"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0",
+    "cross-env": "^7.0.3"
+  }
+}

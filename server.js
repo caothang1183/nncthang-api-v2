@@ -17,6 +17,14 @@ const userRoute = require("@routes/user.routes");
 app.use("/api/users", userRoute);
 const roleRoute = require("@routes/role.routes");
 app.use("/api/roles", roleRoute);
+const topicRoute = require("@routes/topic.routes");
+app.use("/api/topics", topicRoute);
+const projectRoute = require("@routes/project.routes");
+app.use("/api/projects", projectRoute);
+const categoriesRoute = require("@routes/category.routes");
+app.use("/api/categories", categoriesRoute);
+const blogRoute = require("@routes/blog.routes");
+app.use("/api/blogs", blogRoute);
 
 app.listen(PORT, (err) => {
   if (err) return console.log("Fail to load Server");

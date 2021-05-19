@@ -7,21 +7,19 @@ const { v4: uuidv4 } = require("uuid");
 Blog.belongsTo(Category, { as: "category", foreignKey: "category_id" });
 
 exports.create = async (req, res) => {
+  console.log(req.file);
   try {
     if (!req.body)
       return res.status(400).send({
         message: "fields can not empty",
       });
-    const { category } = req.body;
-    const currentCategory = await Category.findOne({
-      where: { name: `${category}` },
-    });
-    if (currentCategory === null) {
-      currentCategory = await Category.create({ name: `${category}` });
-    }
     const data = req.body;
-    console.log(data)
-    Object.assign(data, { id: uuidv4(), category_id: currentCategory.id });
+
+    Object.assign(data, {
+      id: uuidv4(),
+      // url: `${req.file.destination}/${req.file.originalname}`
+      created_at: Date.now()
+    });
 
     const blog = await Blog.create(data).catch((err) =>
       HandlerUtils.errorHandler(res, err)
@@ -33,7 +31,7 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-  let include= [{ model: Category, as: "category" }];
+  let include = [{ model: Category, as: "category" }];
   const { page, limit } = req.query;
   const data = await PaginationUtils.paginate(Blog, page, limit, include);
   HandlerUtils.responseHandler(res, data);
@@ -49,7 +47,12 @@ exports.findOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
-  const isUpdated = await Blog.update(req.body, {
+  data = req.body;
+  Object.assign(data, {
+    // url: `${req.file.destination}/${req.file.originalname}`
+    updated_at: Date.now()
+  });
+  const isUpdated = await Blog.update(data, {
     where: { id: id },
   }).catch((err) => HandlerUtils.errorHandler(res, err));
   if (isUpdated == 1) {

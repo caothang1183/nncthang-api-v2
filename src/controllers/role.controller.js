@@ -11,8 +11,10 @@ exports.create = async (req, res) => {
       return res.status(400).send({
         message: "fields can not empty",
       });
-    const { name, description } = req.body;
-    const role = await Role.create({ name, description }).catch((err) =>
+    const data = req.body;
+    Object.assign(data, { id: uuidv4(), created_at: Date.now() });
+
+    const role = await Role.create(data).catch((err) =>
       HandlerUtils.errorHandler(res, err)
     );
     return HandlerUtils.responseHandler(res, role);

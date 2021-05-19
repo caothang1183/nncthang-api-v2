@@ -13,14 +13,8 @@ exports.create = async (req, res) => {
         message: "fields can not empty",
       });
 
-    const { topic } = req.body;
-
-    const currentTopic = await Topic.findOne({ where: { name: `${topic}` } });
-    if (currentTopic === null) {
-      currentTopic = await Topic.create({ name: `${topic}` });
-    }
     const data = req.body;
-    Object.assign(data, { id: uuidv4(), topic_id: currentTopic.id });
+    Object.assign(data, { id: uuidv4(), created_at: Date.now() });
 
     const project = await Project.create(data).catch((err) =>
       HandlerUtils.errorHandler(res, err)
@@ -32,7 +26,7 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-  let include= [{ model: Topic, as: "topic" }];
+  let include = [{ model: Topic, as: "topic" }];
   const { page, limit } = req.query;
   const data = await PaginationUtils.paginate(Project, page, limit, include);
   HandlerUtils.responseHandler(res, data);
@@ -49,7 +43,9 @@ exports.findOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
-  const isUpdated = await Project.update(req.body, {
+  const data = req.body;
+  Object.assign(data, { id: uuidv4(), updated_at: Date.now() });
+  const isUpdated = await Project.update(data, {
     where: { id: id },
   }).catch((err) => HandlerUtils.errorHandler(res, err));
   if (isUpdated == 1) {

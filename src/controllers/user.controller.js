@@ -3,15 +3,15 @@ const Role = require("@models/role.model");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const HandlerUtils = require("@utils/handler.utils");
+const jwt = require("jsonwebtoken");
 
 User.belongsTo(Role, { as: "role", foreignKey: "role_id" });
 
 exports.authentication = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const result = await db.queryDB(query.FIND_BY_EMAIL(email));
-    const user = result.rows[0];
-    if (result.rowCount === 0)
+    const user = await User.findOne({ where: { email } });
+    if (!user.dataValues)
       return res.status(404).json({ message: `user's not exist` });
     if (user.role_id === 0)
       return res.status(403).json({ message: `user doesn't have permission` });

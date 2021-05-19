@@ -6,7 +6,6 @@ router.post("/auth", users.authentication);
 
 router.post(
   "/users/register",
-  auth.verifyDevelopment,
   auth.verifyOwner,
   users.create
 );

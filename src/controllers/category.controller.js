@@ -10,8 +10,9 @@ exports.create = async (req, res) => {
       return res.status(400).send({
         message: "fields can not empty",
       });
+    const created_at = Date.now();
     const { name, description } = req.body;
-    const category = await Category.create({ name, description }).catch((err) =>
+    const category = await Category.create({ name, description, created_at }).catch((err) =>
       HandlerUtils.errorHandler(res, err)
     );
     return HandlerUtils.responseHandler(res, category);
@@ -46,6 +47,10 @@ exports.findOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
+  const data = req.body;
+  Object.assign(data, {
+    updated_at: Date.now()
+  });
   const isUpdated = await Category.update(req.body, {
     where: { id: id },
   }).catch((err) => HandlerUtils.errorHandler(res, err));

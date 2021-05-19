@@ -11,8 +11,9 @@ exports.create = async (req, res) => {
       return res.status(400).send({
         message: "fields can not empty",
       });
-    const { name, description } = req.body;
-    const topic = await Topic.create({ name, description }).catch((err) =>
+    const data = req.body;
+    Object.assign(data, { id: uuidv4(), created_at: Date.now() });
+    const topic = await Topic.create(data).catch((err) =>
       HandlerUtils.errorHandler(res, err)
     );
     return HandlerUtils.responseHandler(res, topic);
@@ -47,7 +48,9 @@ exports.findOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
-  const isUpdated = await Topic.update(req.body, {
+  const data = req.body;
+  Object.assign(data, { id: uuidv4(), updated_at: Date.now() });
+  const isUpdated = await Topic.update(data, {
     where: { id: id },
   }).catch((err) => HandlerUtils.errorHandler(res, err));
   if (isUpdated == 1) {
